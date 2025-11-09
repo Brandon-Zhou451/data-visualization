@@ -6,8 +6,5 @@ seaborn
 geopandas
 wbgapi
 country_converter
-pyjanitor
 numpy
 scipy
-pandas-flavor
-
