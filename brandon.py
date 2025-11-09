@@ -11,7 +11,7 @@
 # # Electricity, emissions, and GDP
 # 
 
-# In[75]:
+# In[1]:
 
 
 ##import necessary libraries
@@ -24,10 +24,9 @@ import plotly.express as px
 import geopandas as gpd
 import wbgapi as wb
 import country_converter as coco
-import pyjanitor
 
 
-# In[76]:
+# In[2]:
 
 
 ##define global color palette
@@ -49,23 +48,20 @@ fuel_color_palette = {
 }
 
 
-# In[77]:
+# In[3]:
 
 
 ##import required data
-co2_df = (
-    pd.read_csv("https://ourworldindata.org/grapher/co-emissions-per-capita.csv?v=1&csvType=full&useColumnShortNames=true")
-    .clean_names()
-    .rename(columns={'emissions_total_per_capita': 'co2_per_capita', 'entity': 'country', 'code': 'iso_code'})
+co2_df = pd.read_csv("https://ourworldindata.org/grapher/co-emissions-per-capita.csv?v=1&csvType=full&useColumnShortNames=true")
+co2_df.columns = (co2_df.columns.str.strip().str.lower().str.replace(r'[^\w\s]', '', regex=True).str.replace(r'\s+', '_', regex=True))
+co2_df = co2_df.rename(columns={'emissions_total_per_capita': 'co2_per_capita', 'entity': 'country', 'code': 'iso_code'})\
     .query("year >= 1990")
-)
 
-energy_df = (
-    pd.read_csv("https://nyc3.digitaloceanspaces.com/owid-public/data/energy/owid-energy-data.csv")
-    .clean_names()
-    .query("year >= 1990")
-    .dropna(subset=['iso_code'])
-).rename(columns={ # We rename the long electricity source columns to be short and simple
+energy_df = pd.read_csv("https://nyc3.digitaloceanspaces.com/owid-public/data/energy/owid-energy-data.csv")
+energy_df.columns = energy_df.columns.str.strip().str.lower().str.replace(r'[^\w\s]', '', regex=True).str.replace(r'\s+', '_', regex=True)
+energy_df = energy_df.query("year >= 1990")\
+    .dropna(subset=['iso_code'])\
+    .rename(columns={ # We rename the long electricity source columns to be short and simple
         'biofuel_electricity': 'biofuel', 'coal_electricity': 'coal', 'gas_electricity': 'gas',
         'hydro_electricity': 'hydro', 'nuclear_electricity': 'nuclear', 'oil_electricity': 'oil',
         'other_renewable_exc_biofuel_electricity': 'other_renewable',
@@ -89,7 +85,7 @@ gdp_percap_df['year'] = gdp_percap_df['year'].str.replace('YR', '', regex=False)
 
 
 
-# In[78]:
+# In[4]:
 
 
 #prepare data for analysis
@@ -99,7 +95,7 @@ energy_df_new = energy_df[['country', 'year', 'iso_code', 'population', 'gdp', '
 energy_df_new.head()
 
 
-# In[79]:
+# In[5]:
 
 
 #prepare data for analysis
@@ -108,7 +104,7 @@ data = data_1.merge(gdp_percap_df, on=['iso_code', 'year'], how='inner')
 data.head()
 
 
-# In[97]:
+# In[6]:
 
 
 #data visualization 1——Electricity Production Mix by Country and Year
@@ -133,7 +129,7 @@ fig1.update_traces(line=dict(width=0))
 co2_gdp_df = co2_df.merge(gdp_percap_df,on=['iso_code','year'],how='inner')
 
 
-# In[102]:
+# In[ ]:
 
 
 #data visualization 2: the relationship between emission and gdp
@@ -143,7 +139,7 @@ fig2 = px.scatter(co2_gdp_df[co2_gdp_df['country']==selected_country], x='co2_pe
     template='plotly_white')
 
 
-# In[117]:
+# In[ ]:
 
 
 #Data Visualization 3: The relationship between electricity and gdp
@@ -156,7 +152,7 @@ fig3 = px.scatter(data3[data3['country']==selected_country],x='elec',y='GDPperca
     template='plotly_white')
 
 
-# In[118]:
+# In[10]:
 
 
 st.plotly_chart(fig1, use_container_width=True)
