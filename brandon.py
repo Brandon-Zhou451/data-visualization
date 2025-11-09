@@ -24,7 +24,7 @@ import plotly.express as px
 import geopandas as gpd
 import wbgapi as wb
 import country_converter as coco
-import janitor
+import pyjanitor
 
 
 # In[76]:
