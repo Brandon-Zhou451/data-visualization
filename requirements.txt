@@ -6,4 +6,4 @@ seaborn
 geopandas
 wbgapi
 country_converter
-janitor
+pyjanitor
